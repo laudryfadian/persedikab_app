@@ -1,6 +1,6 @@
-# persedikab_app
+# persedikab app
 
-A new Flutter project.
+Aplikasi mobile fanbase persedikab kediri
 
 ## Getting Started
 
