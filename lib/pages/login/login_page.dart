@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:persedikab_app/common/theme_helper.dart';
 import 'package:persedikab_app/nav.dart';
+import 'package:persedikab_app/network/network.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
 import 'package:persedikab_app/pages/register/register_page.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatelessWidget {
   static const routeName = '/authentification-screen';
@@ -88,12 +92,7 @@ class LoginPage extends StatelessWidget {
                           onPressed: () {
                             print(emailController.text);
                             print(passwordController.text);
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BottomNav()),
-                              (Route<dynamic> route) => false,
-                            );
+                            login(context);
                           },
                           child: Text(
                             'Masuk',
@@ -144,5 +143,25 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void login(BuildContext context) async {
+    print("Login");
+    var response = await http.post(Uri.parse(BaseUrl.login),
+        body: ({
+          "email": emailController.text,
+          "password": passwordController.text
+        }));
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNav()),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(body['message'])));
+    }
   }
 }
