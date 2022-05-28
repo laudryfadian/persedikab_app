@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../../widget/header_widget.dart';
 import '../../common/theme_helper.dart';
+import 'package:http/http.dart' as http;
+import 'package:persedikab_app/network/network.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -15,6 +19,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
   bool checkboxValue = false;
+  TextEditingController namaController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController alamatController = TextEditingController();
+  TextEditingController nohpController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController jkController = TextEditingController();
+  TextEditingController ttlController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Container(
                           child: TextFormField(
+                            controller: namaController,
                             decoration: ThemeHelper().textInputDecoration(
                                 'Nama Lengkap', 'Masukkan nama lengkapmu'),
                           ),
@@ -75,14 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Container(
                           child: TextFormField(
-                            decoration: ThemeHelper().textInputDecoration(
-                                'Alamat', 'Masukkan alamat rumahmu'),
-                          ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                        ),
-                        SizedBox(height: 30.0),
-                        Container(
-                          child: TextFormField(
+                            controller: emailController,
                             decoration: ThemeHelper().textInputDecoration(
                                 "Email", "Masukkan emailmu"),
                             keyboardType: TextInputType.emailAddress,
@@ -100,6 +105,23 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(height: 30.0),
                         Container(
                           child: TextFormField(
+                            controller: passwordController,
+                            obscureText: true,
+                            decoration: ThemeHelper().textInputDecoration(
+                                "Password*", "Masukkan passwordmu"),
+                            validator: (val) {
+                              if (val!.isEmpty) {
+                                return "Password tidak boleh kosong!";
+                              }
+                              return null;
+                            },
+                          ),
+                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        ),
+                        SizedBox(height: 30.0),
+                        Container(
+                          child: TextFormField(
+                            controller: nohpController,
                             decoration: ThemeHelper().textInputDecoration(
                                 "Nomor HP", "Masukkan nomor hpmu"),
                             keyboardType: TextInputType.phone,
@@ -116,15 +138,30 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(height: 30.0),
                         Container(
                           child: TextFormField(
-                            obscureText: true,
+                            controller: alamatController,
                             decoration: ThemeHelper().textInputDecoration(
-                                "Password*", "Masukkan passwordmu"),
-                            validator: (val) {
-                              if (val!.isEmpty) {
-                                return "Password tidak boleh kosong!";
-                              }
-                              return null;
-                            },
+                                'Alamat', 'Masukkan alamat rumahmu'),
+                          ),
+                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        ),
+                        SizedBox(height: 30.0),
+                        Container(
+                          child: TextFormField(
+                            controller: jkController,
+                            decoration: ThemeHelper().textInputDecoration(
+                                'Jenis Kelamin', 'Masukkan jenis kelamin'),
+                          ),
+                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          child: TextFormField(
+                            controller: ttlController,
+                            decoration: ThemeHelper().textInputDecoration(
+                                'Tempat, tanggal lahir',
+                                'Masukkan tempat tanggal lahir'),
                           ),
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
@@ -147,12 +184,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ),
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                // Navigator.of(context).pushAndRemoveUntil(
-                                //     MaterialPageRoute(
-                                //         builder: (context) => ProfilePage()),
-                                //     (Route<dynamic> route) => false);
-                              }
+                              // if (_formKey.currentState!.validate()) {
+                              //   // Navigator.of(context).pushAndRemoveUntil(
+                              //   //     MaterialPageRoute(
+                              //   //         builder: (context) => ProfilePage()),
+                              //   //     (Route<dynamic> route) => false);
+                              // }
+                              register();
                             },
                           ),
                         ),
@@ -166,5 +204,29 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void register() async {
+    if (namaController.text.isNotEmpty) {
+      // var response = await http.post(Uri.parse(BaseUrl.register),
+      //     body: ({
+      //       "nama": namaController.text,
+      //       "email": emailController.text,
+      //       "nohp": nohpController.text,
+      //       "password": passwordController.text,
+      //       "jk": jkController.text,
+      //       "ttl": ttlController.text,
+      //       "alamat": alamatController.text
+      //     }));
+      var response = await http.get(Uri.parse("http://localhost:8001/berita"));
+      final body = jsonDecode(response.body);
+      // if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Berhasil hit")));
+      // } else {
+      //   print("Tidak bisa login");
+      // }
+      print(body);
+    }
   }
 }
