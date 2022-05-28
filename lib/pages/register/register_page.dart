@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:persedikab_app/pages/login/login_page.dart';
+import 'package:persedikab_app/pages/otp_verify/otp.dart';
 import '../../widget/header_widget.dart';
 import '../../common/theme_helper.dart';
 import 'package:http/http.dart' as http;
@@ -207,26 +209,49 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void register() async {
-    if (namaController.text.isNotEmpty) {
-      // var response = await http.post(Uri.parse(BaseUrl.register),
-      //     body: ({
-      //       "nama": namaController.text,
-      //       "email": emailController.text,
-      //       "nohp": nohpController.text,
-      //       "password": passwordController.text,
-      //       "jk": jkController.text,
-      //       "ttl": ttlController.text,
-      //       "alamat": alamatController.text
-      //     }));
-      var response = await http.get(Uri.parse("http://localhost:8001/berita"));
+    if (namaController.text.isNotEmpty &&
+        alamatController.text.isNotEmpty &&
+        nohpController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty) {
+      var response = await http.post(Uri.parse(BaseUrl.register),
+          body: ({
+            "nama": namaController.text,
+            "email": emailController.text,
+            "nohp": nohpController.text,
+            "password": passwordController.text,
+            "jk": jkController.text,
+            "ttl": ttlController.text,
+            "alamat": alamatController.text
+          }));
       final body = jsonDecode(response.body);
-      // if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
+        sendOtp();
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(body['message'])));
+      }
+    }
+  }
+
+  void sendOtp() async {
+    print("Kirim otp");
+    var response = await http.post(Uri.parse(BaseUrl.sendOtp),
+        body: ({"email": emailController.text}));
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Berhasil hit")));
-      // } else {
-      //   print("Tidak bisa login");
-      // }
-      print(body);
+          .showSnackBar(SnackBar(content: Text("Harap cek code otp email")));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OTP(
+                  email: emailController.text,
+                )),
+        (Route<dynamic> route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(body['message'])));
     }
   }
 }
