@@ -9,4 +9,18 @@ class BaseUrl {
 
   //berita
   static String berita = domain + "berita";
+
+  //team
+  static String team = domain + "klub/pemain";
+  static String official = domain + "klub/manajemen";
+  static String statistik = domain + "klub/statistic";
+  static String saran = domain + "klub/saran";
+
+  //pertandingan
+  static String pertandingan = domain + "pertandingan/jadwal";
+  static String history = domain + "pertandingan/history";
+
+  //komentar
+  static String komentar = domain + "berita/komentar/";
+  static String kirimKomentar = domain + "berita/komentar";
 }
