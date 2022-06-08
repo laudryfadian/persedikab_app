@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:persedikab_app/nav.dart';
 import 'package:persedikab_app/pages/login/login_page.dart';
 
 void main() {
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.red, primaryColor: Colors.red),
       home: LoginPage(),
+      // home: BottomNav(selectLayer: 0),
     );
   }
 }
