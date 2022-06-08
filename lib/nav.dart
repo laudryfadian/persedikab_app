@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:persedikab_app/pages/history_match/history.dart';
+import 'package:persedikab_app/pages/history_match/match_page.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
 import 'package:persedikab_app/pages/news/news_page.dart';
 import 'package:persedikab_app/pages/shop/shop_page.dart';
 import 'package:persedikab_app/pages/team/team_page.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({Key? key}) : super(key: key);
+  const BottomNav({Key? key, required this.selectLayer}) : super(key: key);
+  final int selectLayer;
 
   @override
   State<BottomNav> createState() => _BottomNavState();
@@ -15,11 +18,14 @@ class _BottomNavState extends State<BottomNav> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.selectLayer;
   }
 
   int _selectedIndex = 0;
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
+    // HistoryPage(),
+    MatchPage(),
     NewsPage(),
     TeamPage(),
     ShopPage()
@@ -59,7 +65,7 @@ class _BottomNavState extends State<BottomNav> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.library_books_rounded),
+                  icon: Icon(Icons.history_edu),
                   iconSize: _selectedIndex == 1 ? 35 : 20,
                   color:
                       _selectedIndex == 1 ? Colors.red.shade900 : Colors.white,
@@ -68,7 +74,7 @@ class _BottomNavState extends State<BottomNav> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.person),
+                  icon: Icon(Icons.library_books_rounded),
                   iconSize: _selectedIndex == 2 ? 35 : 20,
                   color:
                       _selectedIndex == 2 ? Colors.red.shade900 : Colors.white,
@@ -77,12 +83,21 @@ class _BottomNavState extends State<BottomNav> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.shopping_bag_rounded),
+                  icon: Icon(Icons.person),
                   iconSize: _selectedIndex == 3 ? 35 : 20,
                   color:
                       _selectedIndex == 3 ? Colors.red.shade900 : Colors.white,
                   onPressed: () {
                     _onItemTap(3);
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.shopping_bag_rounded),
+                  iconSize: _selectedIndex == 4 ? 35 : 20,
+                  color:
+                      _selectedIndex == 4 ? Colors.red.shade900 : Colors.white,
+                  onPressed: () {
+                    _onItemTap(4);
                   },
                 ),
               ],
