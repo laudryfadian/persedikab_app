@@ -86,7 +86,10 @@ class _OTPState extends State<OTP> {
           .showSnackBar(SnackBar(content: Text("Berhasil login")));
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => BottomNav()),
+        MaterialPageRoute(
+            builder: (context) => BottomNav(
+                  selectLayer: 0,
+                )),
         (Route<dynamic> route) => false,
       );
     } else {
