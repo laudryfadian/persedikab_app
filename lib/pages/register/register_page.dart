@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:persedikab_app/pages/login/login_page.dart';
@@ -28,6 +30,49 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController jkController = TextEditingController();
   TextEditingController ttlController = TextEditingController();
+  String _date = "Belum ada";
+  final List<String> items = ['Laki - Laki', 'Perempuan'];
+  String? selectedValue;
+
+  List<DropdownMenuItem<String>> _addDividersAfterItems(List<String> items) {
+    List<DropdownMenuItem<String>> _menuItems = [];
+    for (var item in items) {
+      _menuItems.addAll(
+        [
+          DropdownMenuItem<String>(
+            value: item,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+          //If it's last item, we will not add Divider after it.
+          if (item != items.last)
+            const DropdownMenuItem<String>(
+              enabled: false,
+              child: Divider(),
+            ),
+        ],
+      );
+    }
+    return _menuItems;
+  }
+
+  List<int> _getDividersIndexes() {
+    List<int> _dividersIndexes = [];
+    for (var i = 0; i < (items.length * 2) - 1; i++) {
+      //Dividers indexes will be the odd indexes
+      if (i.isOdd) {
+        _dividersIndexes.add(i);
+      }
+    }
+    return _dividersIndexes;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,25 +192,98 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
                         SizedBox(height: 30.0),
-                        Container(
-                          child: TextFormField(
-                            controller: jkController,
-                            decoration: ThemeHelper().textInputDecoration(
-                                'Jenis Kelamin', 'Masukkan jenis kelamin'),
+                        // Container(
+                        //   child: TextFormField(
+                        //     controller: jkController,
+                        //     decoration: ThemeHelper().textInputDecoration(
+                        //         'Jenis Kelamin', 'Masukkan jenis kelamin'),
+                        //   ),
+                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        // ),
+                        DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                            isExpanded: true,
+                            hint: Text(
+                              'Pilih jenis kelamin',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                            items: _addDividersAfterItems(items),
+                            customItemsIndexes: _getDividersIndexes(),
+                            customItemsHeight: 4,
+                            value: selectedValue,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedValue = value as String;
+                              });
+                            },
                           ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
                         ),
                         SizedBox(
                           height: 30,
                         ),
-                        Container(
-                          child: TextFormField(
-                            controller: ttlController,
-                            decoration: ThemeHelper().textInputDecoration(
-                                'Tempat, tanggal lahir',
-                                'Masukkan tempat tanggal lahir'),
+                        RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0)),
+                          elevation: 4.0,
+                          onPressed: () {
+                            DatePicker.showDatePicker(context,
+                                theme: DatePickerTheme(
+                                  containerHeight: 210.0,
+                                ),
+                                showTitleActions: true,
+                                minTime: DateTime(2000, 1, 1),
+                                maxTime: DateTime(2022, 12, 31),
+                                onConfirm: (date) {
+                              print('confirm $date');
+                              _date =
+                                  '${date.day} - ${date.month} - ${date.year}';
+                              setState(() {});
+                            },
+                                currentTime: DateTime.now(),
+                                locale: LocaleType.id);
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50.0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.date_range,
+                                            size: 18.0,
+                                            color: Colors.red,
+                                          ),
+                                          Text(
+                                            " $_date",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Text(
+                                  "  Ubah",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0),
+                                ),
+                              ],
+                            ),
                           ),
-                          decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                          color: Colors.white,
                         ),
                         SizedBox(height: 40.0),
                         Container(
@@ -196,6 +314,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                           ),
                         ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -209,6 +328,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void register() async {
+    print(_date);
     if (namaController.text.isNotEmpty &&
         alamatController.text.isNotEmpty &&
         nohpController.text.isNotEmpty &&
@@ -220,7 +340,8 @@ class _RegisterPageState extends State<RegisterPage> {
             "nohp": nohpController.text,
             "password": passwordController.text,
             "jk": jkController.text,
-            "ttl": ttlController.text,
+            // "ttl": ttlController.text,
+            "ttl": _date,
             "alamat": alamatController.text
           }));
       final body = jsonDecode(response.body);
@@ -250,8 +371,8 @@ class _RegisterPageState extends State<RegisterPage> {
         (Route<dynamic> route) => false,
       );
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(body['message'])));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Terjadi kesalahan, mohon ulangi sesaat lagi")));
     }
   }
 }
