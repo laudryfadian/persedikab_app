@@ -1,5 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:persedikab_app/nav.dart';
+import 'package:persedikab_app/pages/home/content/banner.dart';
+import 'package:persedikab_app/pages/home/content/berita.dart';
+import 'package:persedikab_app/pages/home/content/jadwal.dart';
+import 'package:persedikab_app/pages/home/content/next_match.dart';
+import 'package:persedikab_app/pages/home/content/pemain.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,143 +17,95 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-            child: Container(
+      body: SingleChildScrollView(
+        child: Container(
           margin: EdgeInsets.symmetric(horizontal: 20),
-          width: double.infinity,
-          height: 320,
-          decoration: BoxDecoration(
-              color: Colors.red, borderRadius: BorderRadius.circular(15)),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 15),
+              BannerHome(),
+              SizedBox(height: 20),
+              ContentNextMatch(),
               Container(
-                alignment: Alignment.center,
-                width: double.infinity,
-                height: 60,
-                decoration: BoxDecoration(
-                    color: Colors.red.shade900,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15))),
-                child: Text(
-                  'NEXT MATCH',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(height: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(15))),
+                  padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                  child: ContentJadwal()),
+              SizedBox(height: 20),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                color: Colors.yellow,
+                // padding: EdgeInsets.only(left: 15),
+                alignment: Alignment.topLeft,
                 child: Text(
-                  'Liga 3',
+                  "Berita",
                   style: TextStyle(
-                      color: Colors.red.shade900,
+                      color: Colors.red,
                       fontWeight: FontWeight.bold,
-                      fontSize: 15),
+                      fontSize: 23),
                 ),
               ),
-              SizedBox(height: 10),
+              ContentBerita(),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 15),
-                // color: Colors.yellow,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          height: 100,
-                          width: 100,
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://upload.wikimedia.org/wikipedia/id/0/03/Logo_Persedikab_Kediri.png',
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error_outline),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Container(
-                          width: 100,
-                          child: Text(
-                            'Persedikab Kediri'.toUpperCase(),
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                          ),
-                        )
-                      ],
-                    ),
-                    Text(
-                      'VS',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 60),
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          height: 100,
-                          width: 100,
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                'https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Persik_Kediri_logo.svg/1200px-Persik_Kediri_logo.svg.png',
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error_outline),
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Container(
-                          width: 100,
-                          child: Text(
-                            'Persik Kediri'.toUpperCase(),
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
+                alignment: Alignment.topRight,
+                child: InkWell(
+                  child: Text(
+                    "Baca Selengkapnya...",
+                    style: TextStyle(color: Colors.red, fontSize: 15),
+                  ),
+                  onTap: () {
+                    print("klik selengkapnya");
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNav(
+                                selectLayer: 2,
+                              )),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Container(
+                // padding: EdgeInsets.only(left: 15),
+                alignment: Alignment.topLeft,
                 child: Text(
-                  '15:00',
+                  "Pemain",
                   style: TextStyle(
-                      color: Colors.yellow, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23),
                 ),
               ),
-              SizedBox(height: 5),
               Container(
-                child: Text(
-                  '24 Desember 2020',
-                  style: TextStyle(color: Colors.yellow),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: 5),
+                  width: double.infinity, height: 200, child: ContentPemain()),
               Container(
-                child: Text(
-                  'Stadion Gelora Bung Tomo, Surabaya',
-                  style: TextStyle(color: Colors.yellow),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
+                padding: EdgeInsets.only(top: 10),
+                alignment: Alignment.topRight,
+                child: InkWell(
+                  child: Text(
+                    "Lihat Selengkapnya...",
+                    style: TextStyle(color: Colors.red, fontSize: 15),
+                  ),
+                  onTap: () {
+                    print("klik selengkapnya");
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNav(
+                                selectLayer: 3,
+                              )),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
                 ),
               ),
+              SizedBox(height: 30),
             ],
           ),
-        )),
+        ),
       ),
     );
   }
