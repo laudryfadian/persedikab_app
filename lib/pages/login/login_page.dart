@@ -7,6 +7,7 @@ import 'package:persedikab_app/network/network.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
 import 'package:persedikab_app/pages/register/register_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatelessWidget {
   static const routeName = '/authentification-screen';
@@ -152,16 +153,25 @@ class LoginPage extends StatelessWidget {
           "email": emailController.text,
           "password": passwordController.text
         }));
-    final body = jsonDecode(response.body);
+
     if (response.statusCode == 200) {
+      final body = jsonDecode(response.body)['result']['data'];
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      await pref.setString("idUser", body['_id']);
+
+      print(body["_id"]);
+
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => BottomNav()),
+        MaterialPageRoute(
+            builder: (context) => BottomNav(
+                  selectLayer: 0,
+                )),
         (Route<dynamic> route) => false,
       );
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(body['message'])));
+          .showSnackBar(SnackBar(content: Text("Email atau Password salah")));
     }
   }
 }
