@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:persedikab_app/pages/team/tab/masukan_tab.dart';
 import 'package:persedikab_app/pages/team/tab/official_tab.dart';
 import 'package:persedikab_app/pages/team/tab/statistik_tab.dart';
 import 'package:persedikab_app/pages/team/tab/team_tab.dart';
@@ -15,7 +14,7 @@ class _UserPageState extends State<TeamPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120),
@@ -48,10 +47,7 @@ class _UserPageState extends State<TeamPage> {
                     tabs: const [
                       Tab(text: 'Team'),
                       Tab(text: 'Official'),
-                      Tab(text: 'Statistik'),
-                      Tab(
-                        text: 'Masukan',
-                      )
+                      Tab(text: 'Statistik')
                     ],
                   ),
                 )
@@ -59,7 +55,7 @@ class _UserPageState extends State<TeamPage> {
             ),
           ),
           body: TabBarView(
-            children: [TeamTab(), OfficialTab(), StatistikTab(), MasukanTab()],
+            children: [TeamTab(), OfficialTab(), StatistikTab()],
           )),
     );
   }
