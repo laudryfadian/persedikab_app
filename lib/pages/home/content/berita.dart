@@ -77,7 +77,7 @@ class _ContentBeritaState extends State<ContentBerita> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.0),
                         image: DecorationImage(
-                            image: NetworkImage(_data.gambar),
+                            image: NetworkImage(_data.gambar[0]),
                             fit: BoxFit.cover)),
                   ),
                   SizedBox(
@@ -127,23 +127,6 @@ class _ContentBeritaState extends State<ContentBerita> {
                                 ],
                               ),
                             ),
-                            InkWell(
-                              onTap: () {
-                                // setState(() {
-                                //   if (_like == false) {
-                                //     _like = true;
-                                //   } else {
-                                //     _like = false;
-                                //   }
-                                // });
-
-                                // print(_like);
-                              },
-                              child: Container(
-                                child: Icon(CupertinoIcons.heart_fill,
-                                    color: Colors.grey),
-                              ),
-                            )
                           ],
                         ),
                       ],

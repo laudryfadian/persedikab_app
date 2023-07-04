@@ -12,7 +12,6 @@ class CardNews extends StatefulWidget {
 }
 
 class _CardNewsState extends State<CardNews> {
-  bool _like = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +28,7 @@ class _CardNewsState extends State<CardNews> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12.0),
                 image: DecorationImage(
-                    image: NetworkImage(widget.news.gambar),
+                    image: NetworkImage(widget.news.gambar[0]),
                     fit: BoxFit.cover)),
           ),
           SizedBox(
@@ -79,23 +78,6 @@ class _CardNewsState extends State<CardNews> {
                         ],
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (_like == false) {
-                            _like = true;
-                          } else {
-                            _like = false;
-                          }
-                        });
-
-                        print(_like);
-                      },
-                      child: Container(
-                        child: Icon(CupertinoIcons.heart_fill,
-                            color: _like == true ? Colors.red : Colors.grey),
-                      ),
-                    )
                   ],
                 ),
               ],

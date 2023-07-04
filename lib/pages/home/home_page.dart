@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persedikab_app/nav.dart';
 import 'package:persedikab_app/pages/home/content/banner.dart';
 import 'package:persedikab_app/pages/home/content/berita.dart';
+import 'package:persedikab_app/pages/home/content/content_toko.dart';
 import 'package:persedikab_app/pages/home/content/jadwal.dart';
 import 'package:persedikab_app/pages/home/content/next_match.dart';
 import 'package:persedikab_app/pages/home/content/pemain.dart';
@@ -34,6 +35,19 @@ class _HomePageState extends State<HomePage> {
                           BorderRadius.vertical(bottom: Radius.circular(15))),
                   padding: EdgeInsets.only(top: 10, left: 25, right: 25),
                   child: ContentJadwal()),
+              SizedBox(height: 20),
+              Container(
+                // padding: EdgeInsets.only(left: 15),
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Toko",
+                  style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 23),
+                ),
+              ),
+              ContentToko(),
               SizedBox(height: 20),
               Container(
                 // padding: EdgeInsets.only(left: 15),

@@ -1,10 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persedikab_app/pages/history_match/history.dart';
 import 'package:persedikab_app/pages/history_match/match_page.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
 import 'package:persedikab_app/pages/news/news_page.dart';
+import 'package:persedikab_app/pages/setting/setting_page.dart';
 import 'package:persedikab_app/pages/shop/shop_page.dart';
 import 'package:persedikab_app/pages/team/team_page.dart';
+import 'package:persedikab_app/pages/ticket/ticket.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key, required this.selectLayer}) : super(key: key);
@@ -43,6 +47,32 @@ class _BottomNavState extends State<BottomNav> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Persedikab'.toUpperCase()),
+        leading: IconButton(
+            onPressed: () async {
+              SharedPreferences pref = await SharedPreferences.getInstance();
+              var idUser = pref.getString("idUser");
+              idUser != null
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingPage()),
+                    )
+                  : print("gagal");
+            },
+            icon: Icon(CupertinoIcons.person_fill)),
+        actions: <Widget>[
+          IconButton(
+              onPressed: () async {
+                SharedPreferences pref = await SharedPreferences.getInstance();
+                var idUser = pref.getString("idUser");
+                idUser != null
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyTicket()),
+                      )
+                    : print("gagal");
+              },
+              icon: Icon(CupertinoIcons.tickets_fill))
+        ],
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomAppBar(

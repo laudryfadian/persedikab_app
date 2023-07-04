@@ -1,8 +1,10 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:persedikab_app/constant.dart';
 import 'package:persedikab_app/models/news.dart';
 import 'package:persedikab_app/pages/news/komentar.dart';
 import 'package:persedikab_app/widget/circle_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DetailNews extends StatelessWidget {
   final Data detail;
@@ -41,11 +43,21 @@ class DetailNews extends StatelessWidget {
                 tag: detail.tanggal,
                 child: Container(
                   height: 220.0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      image: DecorationImage(
-                          image: NetworkImage(detail.gambar),
-                          fit: BoxFit.fill)),
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                        autoPlay: true,
+                        aspectRatio: 2.0,
+                        enlargeCenterPage: true),
+                    items: detail.gambar
+                        .map((e) => Container(
+                              decoration: BoxDecoration(
+                                  // borderRadius: BorderRadius.circular(15.0),
+                                  image: DecorationImage(
+                                      image: NetworkImage(e),
+                                      fit: BoxFit.cover)),
+                            ))
+                        .toList(),
+                  ),
                 )),
             SizedBox(
               height: 10.0,
@@ -74,14 +86,20 @@ class DetailNews extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               child: RaisedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Komentar(
-                                judul: detail.judul,
-                                idBerita: detail.sId,
-                              )));
+                onPressed: () async {
+                  SharedPreferences pref =
+                      await SharedPreferences.getInstance();
+                  var idUser = pref.getString("idUser");
+                  idUser != null
+                      ? Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Komentar(
+                                    judul: detail.judul,
+                                    idBerita: detail.sId,
+                                  )))
+                      : ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Harap login dulu')));
                 },
                 color: Colors.red,
                 textColor: Colors.white,

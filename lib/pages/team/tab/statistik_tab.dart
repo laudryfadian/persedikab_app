@@ -66,7 +66,10 @@ class _StatistikTabState extends State<StatistikTab> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("TOTAL MATCH", style: kTitleStat),
+                        Text(
+                          "TOTAL MATCH",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                         Text(
                           statistik[0].match.toString(),
                           style: kTitleStat,
@@ -75,13 +78,13 @@ class _StatistikTabState extends State<StatistikTab> {
                     ),
                   ),
                   Container(
-                    width: double.infinity,
                     padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                     margin: EdgeInsets.only(left: 20.0, right: 20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
+                          width: MediaQuery.of(context).size.width * 0.42,
                           padding: EdgeInsets.all(25.0),
                           decoration: BoxDecoration(
                               color: Colors.red.shade900,
@@ -91,7 +94,8 @@ class _StatistikTabState extends State<StatistikTab> {
                             children: [
                               Text(
                                 "MENANG",
-                                style: kTitleStat,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
                               ),
                               Text(
                                 statistik[0].menang.toString(),
@@ -101,6 +105,7 @@ class _StatistikTabState extends State<StatistikTab> {
                           ),
                         ),
                         Container(
+                          width: MediaQuery.of(context).size.width * 0.42,
                           decoration: BoxDecoration(
                               color: Colors.red.shade900,
                               borderRadius:
@@ -110,7 +115,8 @@ class _StatistikTabState extends State<StatistikTab> {
                             children: [
                               Text(
                                 "KALAH",
-                                style: kTitleStat,
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
                               ),
                               Text(
                                 statistik[0].kalah.toString(),
@@ -132,7 +138,10 @@ class _StatistikTabState extends State<StatistikTab> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("GOAL", style: kTitleStat),
+                        Text(
+                          "GOAL",
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
                         Text(
                           statistik[0].goal.toString(),
                           style: kTitleStat,

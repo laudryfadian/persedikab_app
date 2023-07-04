@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persedikab_app/constant.dart';
 import 'package:persedikab_app/models/komentar.dart';
@@ -22,6 +23,7 @@ class Komentar extends StatefulWidget {
 class _KomentarState extends State<Komentar> {
   List<Data> listKomentar = [];
   TextEditingController komentarController = TextEditingController();
+  TextEditingController reportController = TextEditingController();
 
   @override
   void initState() {
@@ -137,13 +139,31 @@ class _KomentarState extends State<Komentar> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Container(
-                                  child: Text(
-                                    _data.users.nama,
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      child: Text(
+                                        _data.users.nama,
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      child: InkWell(
+                                        child: Icon(
+                                          CupertinoIcons
+                                              .exclamationmark_triangle_fill,
+                                          color: Colors.red,
+                                        ),
+                                        onTap: () {
+                                          report(_data.sId);
+                                        },
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 SizedBox(height: 5),
                                 Container(
@@ -151,7 +171,8 @@ class _KomentarState extends State<Komentar> {
                                     _data.isi,
                                     style: TextStyle(fontSize: 16),
                                   ),
-                                )
+                                ),
+                                Divider(thickness: 2)
                               ],
                             );
                           },
@@ -210,5 +231,50 @@ class _KomentarState extends State<Komentar> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(body['message'])));
     }
+  }
+
+  void report(id) async {
+    showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Apa alasan kamu melaporkan komentar ini?"),
+              content: TextFormField(
+                controller: reportController,
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Batal'),
+                  child: Text('Batal', style: TextStyle(color: Colors.red)),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    SharedPreferences pref =
+                        await SharedPreferences.getInstance();
+                    var response = await http.post(
+                        Uri.parse(BaseUrl.laporKomentar + id),
+                        body: ({
+                          "reason": reportController.text,
+                          "idUser": pref.getString("idUser")
+                        }));
+
+                    final body = jsonDecode(response.body);
+                    if (response.statusCode == 200) {
+                      _fetchData();
+                      komentarController.text = "";
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(body['message'])));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(body['message'])));
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    'Lapor',
+                    style: TextStyle(color: Colors.green.shade800),
+                  ),
+                ),
+              ],
+            ));
   }
 }

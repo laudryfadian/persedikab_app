@@ -46,16 +46,15 @@ class _ContentJadwalState extends State<ContentJadwal> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: defaultJadwal,
+      itemCount: listJadwal.length == 2 ? 1 : defaultJadwal,
       shrinkWrap: true,
       physics: ScrollPhysics(),
       itemBuilder: (context, index) {
-        var _data = listJadwal[index + 1];
-        if (listJadwal.length == 0) {
-          return Center(
-            child: Text("Data Kosong"),
-          );
+        if (listJadwal.length == 0 || listJadwal.length == 1) {
+          return Container();
         }
+        var ke = 1;
+        var _data = listJadwal[index + ke];
 
         return Container(
           padding: EdgeInsets.only(bottom: 10),
