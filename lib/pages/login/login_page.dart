@@ -5,17 +5,26 @@ import 'package:persedikab_app/common/theme_helper.dart';
 import 'package:persedikab_app/nav.dart';
 import 'package:persedikab_app/network/network.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
+import 'package:persedikab_app/pages/otp_verify/otp.dart';
 import 'package:persedikab_app/pages/register/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const routeName = '/authentification-screen';
 
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
   LoginPage({Key? key}) : super(key: key);
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool isLoading = false;
+
+  final emailController = TextEditingController();
+
+  final passwordController = TextEditingController();
 
   Widget userInput(TextEditingController userInput, String hintTitle,
       String hintTitle2, TextInputType keyboardType, bool securePass) {
@@ -36,7 +45,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(color: Colors.red),
@@ -51,7 +60,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 550,
+                height: MediaQuery.of(context).size.height * 0.7,
                 width: double.infinity,
                 decoration: BoxDecoration(
                   boxShadow: [
@@ -93,22 +102,29 @@ class LoginPage extends StatelessWidget {
                           onPressed: () {
                             print(emailController.text);
                             print(passwordController.text);
+                            setState(() {
+                              isLoading = true;
+                            });
                             login(context);
                           },
-                          child: Text(
-                            'Masuk',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: isLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : Text(
+                                  'Masuk',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
-                      Center(
-                        child: Text('Lupa Password'),
-                      ),
-                      Divider(thickness: 0, color: Colors.white),
+                      // Center(
+                      //   child: Text('Lupa Password'),
+                      // ),
+                      // Divider(thickness: 0, color: Colors.white),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -154,10 +170,17 @@ class LoginPage extends StatelessWidget {
           "password": passwordController.text
         }));
 
+    var message = jsonDecode(response.body);
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body)['result']['data'];
       SharedPreferences pref = await SharedPreferences.getInstance();
       await pref.setString("idUser", body['_id']);
+      await pref.setString("emailUser", body['email']);
+      await pref.setString("namaUser", body['nama']);
+      await pref.setString("nohpUser", body['nohp']);
+      await pref.setString("alamatUser", body['alamat']);
+      await pref.setString("jkUser", body['jk']);
+      await pref.setString("ttlUser", body['ttl']);
 
       print(body["_id"]);
 
@@ -169,9 +192,24 @@ class LoginPage extends StatelessWidget {
                 )),
         (Route<dynamic> route) => false,
       );
+    } else if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message['message'])));
+      String nohp = jsonDecode(response.body)['result']['data']['nohp'];
+      print(nohp);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => OTP(
+                  nohp: nohp,
+                )),
+      );
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Email atau Password salah")));
+          .showSnackBar(SnackBar(content: Text(message['message'])));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 }

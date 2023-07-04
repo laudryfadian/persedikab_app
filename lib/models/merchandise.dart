@@ -1,18 +1,18 @@
-class News {
+class Merchandise {
   late bool status;
   late int statusCode;
   late String timestamp;
   late String message;
   late Result result;
 
-  News(
+  Merchandise(
       {required this.status,
       required this.statusCode,
       required this.timestamp,
       required this.message,
       required this.result});
 
-  News.fromJson(Map<String, dynamic> json) {
+  Merchandise.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     statusCode = json['statusCode'];
     timestamp = json['timestamp'];
@@ -59,37 +59,49 @@ class Result {
 
 class Data {
   late String sId;
-  late String judul;
-  late String isi;
-  late String tanggal;
+  late String kodeProduk;
+  late String nama;
   late List<String> gambar;
-  late bool isRilis;
+  late int harga;
+  late String ukuran;
+  late String kategori;
+  late int stok;
+  late int iV;
 
   Data(
       {required this.sId,
-      required this.judul,
-      required this.isi,
-      required this.tanggal,
+      required this.kodeProduk,
+      required this.nama,
       required this.gambar,
-      required this.isRilis});
+      required this.harga,
+      required this.ukuran,
+      required this.kategori,
+      required this.stok,
+      required this.iV});
 
   Data.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
-    judul = json['judul'];
-    isi = json['isi'];
-    tanggal = json['tanggal'];
+    kodeProduk = json['kodeProduk'];
+    nama = json['nama'];
     gambar = json['gambar'].cast<String>();
-    isRilis = json['isRilis'];
+    harga = json['harga'];
+    ukuran = json['ukuran'];
+    kategori = json['kategori'];
+    stok = json['stok'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
-    data['judul'] = this.judul;
-    data['isi'] = this.isi;
-    data['tanggal'] = this.tanggal;
+    data['kodeProduk'] = this.kodeProduk;
+    data['nama'] = this.nama;
     data['gambar'] = this.gambar;
-    data['isRilis'] = this.isRilis;
+    data['harga'] = this.harga;
+    data['ukuran'] = this.ukuran;
+    data['kategori'] = this.kategori;
+    data['stok'] = this.stok;
+    data['__v'] = this.iV;
     return data;
   }
 }

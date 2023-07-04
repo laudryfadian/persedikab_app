@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:persedikab_app/nav.dart';
 import 'package:persedikab_app/network/network.dart';
 import 'package:persedikab_app/pages/home/home_page.dart';
+import 'package:persedikab_app/pages/login/login_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:http/http.dart' as http;
 
 class OTP extends StatefulWidget {
-  final String email;
-  const OTP({Key? key, required this.email}) : super(key: key);
+  final String nohp;
+  const OTP({Key? key, required this.nohp}) : super(key: key);
 
   @override
   State<OTP> createState() => _OTPState();
@@ -18,6 +19,8 @@ class OTP extends StatefulWidget {
 class _OTPState extends State<OTP> {
   TextEditingController textEditingController = TextEditingController();
   String currentText = "";
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +36,13 @@ class _OTPState extends State<OTP> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Masukkan code verifikasi email",
+                  "Masukkan code verifikasi nohp",
                   style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  widget.nohp,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
                 PinCodeTextField(
@@ -68,6 +76,24 @@ class _OTPState extends State<OTP> {
                   },
                   appContext: context,
                 ),
+                SizedBox(height: 50),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    kirimUlang(widget.nohp);
+                  },
+                  child: isLoading
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "Kirim ulang",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue),
+                        ),
+                ),
               ],
             ),
           ),
@@ -78,23 +104,39 @@ class _OTPState extends State<OTP> {
 
   void cekOtp(otp) async {
     print("Cek otp");
-    var response = await http.post(Uri.parse(BaseUrl.cekOtp),
-        body: ({"email": widget.email, "otp": otp}));
+    final data = {"nohp": widget.nohp, "otp": otp};
+    var response =
+        await http.post(Uri.parse(BaseUrl.newKirimOtp), body: (data));
     final body = jsonDecode(response.body);
+    print(data);
+    print(body);
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Berhasil login")));
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(
-            builder: (context) => BottomNav(
-                  selectLayer: 0,
-                )),
+        MaterialPageRoute(builder: (context) => LoginPage()),
         (Route<dynamic> route) => false,
       );
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("OTP salah")));
     }
+  }
+
+  kirimUlang(nohp) async {
+    print("Kirim otp");
+    var response = await http.post(Uri.parse(BaseUrl.newOtp + nohp));
+    final body = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Harap cek code otp di whatsapp")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Terjadi kesalahan, mohon ulangi sesaat lagi")));
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 }

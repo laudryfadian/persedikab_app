@@ -20,6 +20,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
   bool checkboxValue = false;
@@ -224,6 +225,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         SizedBox(
                           height: 30,
                         ),
+                        Container(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            "Tanggal Lahir",
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ),
+                        SizedBox(height: 10),
                         RaisedButton(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0)),
@@ -234,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   containerHeight: 210.0,
                                 ),
                                 showTitleActions: true,
-                                minTime: DateTime(2000, 1, 1),
+                                minTime: DateTime(1960, 1, 1),
                                 maxTime: DateTime(2022, 12, 31),
                                 onConfirm: (date) {
                               print('confirm $date');
@@ -294,14 +303,18 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                              child: Text(
-                                "Daftar".toUpperCase(),
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              child: isLoading
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      "Daftar".toUpperCase(),
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
                             onPressed: () {
                               // if (_formKey.currentState!.validate()) {
@@ -310,7 +323,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               //   //         builder: (context) => ProfilePage()),
                               //   //     (Route<dynamic> route) => false);
                               // }
-                              register();
+                              setState(() {
+                                isLoading = true;
+                                register();
+                              });
                             },
                           ),
                         ),
@@ -339,7 +355,7 @@ class _RegisterPageState extends State<RegisterPage> {
             "email": emailController.text,
             "nohp": nohpController.text,
             "password": passwordController.text,
-            "jk": jkController.text,
+            "jk": selectedValue,
             // "ttl": ttlController.text,
             "ttl": _date,
             "alamat": alamatController.text
@@ -351,22 +367,28 @@ class _RegisterPageState extends State<RegisterPage> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(body['message'])));
       }
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Harus di isi semua!')));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void sendOtp() async {
     print("Kirim otp");
-    var response = await http.post(Uri.parse(BaseUrl.sendOtp),
-        body: ({"email": emailController.text}));
+    var response =
+        await http.post(Uri.parse(BaseUrl.newOtp + nohpController.text));
     final body = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Harap cek code otp email")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Harap cek code otp di whatsapp")));
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
             builder: (context) => OTP(
-                  email: emailController.text,
+                  nohp: nohpController.text,
                 )),
         (Route<dynamic> route) => false,
       );

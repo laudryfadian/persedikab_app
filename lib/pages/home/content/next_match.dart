@@ -57,6 +57,11 @@ class _ContentNextMatchState extends State<ContentNextMatch> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 listMatch = snapshot.data!;
+                if (listMatch.length == 0) {
+                  return Center(
+                    child: Text("Tidak Ada Jadwal"),
+                  );
+                }
                 return Column(
                   children: [
                     Container(

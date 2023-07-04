@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "37913152475",
+    "project_id": "persedikab-16219",
+    "storage_bucket": "persedikab-16219.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:37913152475:android:4d81106a6f284e456cb5fe",
+        "android_client_info": {
+          "package_name": "com.example.persedikab_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "37913152475-rlegot861no5j0t84g1lk890a0ng6sgt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2QCBKcAVtG7qojiklgRn0n9ZomZ1tvvs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "37913152475-rlegot861no5j0t84g1lk890a0ng6sgt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
